@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Client } from '@stomp/stompjs';
 import MessageList from './MessageList';
 import MessageInput from './MessageInput';
-import { setCurrentConversation, addMessage, setMessages } from '../store/chatSlice';
+import { setCurrentConversation, addMessage, setMessages, selectMessages } from '../store/chatSlice';
 import { RootState } from '../store/store';
 import { Conversation, Message } from '../types';
 
@@ -11,6 +11,12 @@ const ChatWindow: React.FC = () => {
   const dispatch = useDispatch();
   const [client, setClient] = useState<Client | null>(null);
   const currentConversation = useSelector((state: RootState) => state.chat.currentConversation);
+  
+  const [page, setPage] = useState(0);
+  const [loading, setLoading] = useState(false);
+  const [messagesLoaded, setMessagedLoaded] = useState<boolean>(false);
+
+  const messages = useSelector(selectMessages);
 
   useEffect(() => {
     const newClient = new Client({
@@ -35,6 +41,29 @@ const ChatWindow: React.FC = () => {
       }
     };
   }, [dispatch, currentConversation]);
+
+  const loadMoreMessages = useCallback(async () => {
+    if (loading || !currentConversation) return;
+
+    setLoading(true);
+    try {
+      const response = await fetch(`http://localhost:8081/api/history/${currentConversation.id}?page=${page}&size=20`);
+      const data = await response.json();
+      dispatch(setMessages([...data.content.reverse(), ...messages]));
+      setPage(page + 1);
+    } catch (error) {
+      console.error('Error loading more messages:', error);
+    } finally {
+      setLoading(false);
+    }
+  }, [currentConversation, dispatch, loading, messages, page]);
+
+  useEffect(() => {
+    if (currentConversation && !messagesLoaded) {
+      loadMoreMessages();
+      setMessagedLoaded(true);
+    }
+  }, [currentConversation, loadMoreMessages, messagesLoaded]);
 
   const startNewConversation = async () => {
     try {
@@ -73,7 +102,10 @@ const ChatWindow: React.FC = () => {
       {currentConversation ? (
         <>
           <h3>{currentConversation.title}</h3>
-          <MessageList />
+          <button onClick={loadMoreMessages} disabled={loading}>
+            {loading ? 'Loading...' : 'Load More'}
+          </button>
+          <MessageList onScrollTop={loadMoreMessages} />
           <MessageInput sendMessage={sendMessage} />
         </>
       ) : (
