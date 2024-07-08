@@ -24,7 +24,7 @@ const MessageList: React.FC<Props> = ({ onScrollTop }) => {
   return (
     <div className="message-list" ref={messageListRef}>
       {messages.map((message) => (
-        <div key={message.id} className={`message ${message.senderType.toLowerCase()}`}>
+        <div key={message.id} className={`message ${message.senderType?.toLowerCase()}`}>
           <p>{message.content}</p>
           <small>{new Date(message.timestamp).toLocaleString()}</small>
         </div>
