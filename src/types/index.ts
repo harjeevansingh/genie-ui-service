@@ -1,4 +1,4 @@
-export interface Message {
+export interface MessageDTO {
     id: number;
     conversationId: number;
     senderType: 'USER' | 'AI';
@@ -6,7 +6,7 @@ export interface Message {
     timestamp: string;
   }
   
-  export interface Conversation {
+  export interface ConversationDTO {
     id: number;
     userId: number;
     title: string;
