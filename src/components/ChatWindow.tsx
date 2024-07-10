@@ -49,7 +49,8 @@ const ChatWindow: React.FC = () => {
 
   const handleScrollTop = useCallback(() => {
     if (conversationId) {
-      dispatch(loadMoreMessages(parseInt(conversationId, 10)));
+      // dispatch(loadMoreMessages(parseInt(conversationId, 10)));
+      // Not integrated history api yet
     }
   }, [dispatch, conversationId]);
 

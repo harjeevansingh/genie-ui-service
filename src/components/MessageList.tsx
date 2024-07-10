@@ -8,6 +8,7 @@ interface MessageListProps {
 
 const MessageList: React.FC<MessageListProps> = ({ messages, onScrollTop }) => {
   const messageListRef = useRef<HTMLDivElement>(null);
+  const sortedMessages = [...messages].sort((a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime());
 
   useEffect(() => {
     const handleScroll = () => {
@@ -36,7 +37,7 @@ const MessageList: React.FC<MessageListProps> = ({ messages, onScrollTop }) => {
 
   return (
     <div className="message-list" ref={messageListRef}>
-      {messages.map((message) => (
+      {sortedMessages.map((message) => (
         <div key={message.id} className={`message ${message.senderType?.toLowerCase() || 'unknown'}`}>
           <p>{message.content}</p>
           <small>{message.timestamp ? new Date(message.timestamp).toLocaleString() : 'No timestamp'}</small>
