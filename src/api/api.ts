@@ -1,9 +1,8 @@
-// src/api.ts
 import axios from 'axios';
 import { MessageDTO, ConversationDTO } from '../types';
 import { DUMMY_USER_ID } from '../constants/CommonConstants';
 
-const API_BASE_URL = 'http://localhost:8080/api';
+const API_BASE_URL = (process.env.REACT_APP_CHAT_SERVICE_URL || 'http://localhost:8080')+"/api";
 
 export const fetchConversationsAPI = () => 
   axios.get<ConversationDTO[]>(`${API_BASE_URL}/chat/conversations/` + DUMMY_USER_ID);

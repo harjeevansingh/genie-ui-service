@@ -1,0 +1,11 @@
+version: '3.8'
+
+services:
+  react-app:
+    build: .
+    ports:
+      - "3001:3000"
+    environment:
+      - REACT_APP_CHAT_SERVICE_URL=http://host.docker.internal:8080
+      - REACT_APP_HISTORY_SERVICE_URL=http://host.docker.internal:8081
+      - REACT_APP_LANGUAGE_MODEL_SERVICE_URL=http://host.docker.internal:8082
