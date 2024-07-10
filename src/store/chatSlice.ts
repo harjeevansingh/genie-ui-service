@@ -1,6 +1,4 @@
-// src/store/chatSlice.ts
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
-// import { fetchConversationsAPI, fetchMessagesAPI, sendMessageAPI, startNewConversationAPI } from '../api';
 import { ConversationDTO, MessageDTO } from '../types';
 import { fetchConversationsAPI, fetchMessagesAPI, sendMessageAPI, startNewConversationAPI } from '../api/api';
 import { RootState } from './store';

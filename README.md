@@ -1,46 +1,106 @@
-# Getting Started with Create React App
+Genie Chat Bot - Deployment guide
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-## Available Scripts
 
-In the project directory, you can run:
+This guide explains how to deploy the Chat, History, Language Model and UI services using Docker Compose.
 
-### `npm start`
+Repos -
+Chat service - https://github.com/harjeevansingh/genie-chat-service 
+History service - https://github.com/harjeevansingh/genie-history-service 
+Language model service - https://github.com/harjeevansingh/genie-language-model-service 
+UI service - https://github.com/harjeevansingh/genie-ui-service 
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+1. Prerequisites:
+   1.1. Docker and Docker Compose installed on your system
+   1.2. Ports 3306 (MySQL), 27017 (MongoDB), 6379 (Redis), 9092 (Kafka) should be available on your host machine
+   1.3. OpenAI API key (Requires paid account at OpenAi)
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+2. Important Notes:
+   2.1. These services will create containers for -
+  	- MySQL (port 3306)
+        	- Redis (port 6379)
+  	- Kafka (port 9092)
+     	- Zookeeper (port 2181)
+- Chat Service (port 8080)
+- History Service (port 8081)
+ 	- Language Model Service (port 8082)
+	- UI (port 3000)
 
-### `npm test`
+Note - Ensure these ports are not in use by existing installations on your host machine.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+   2.2. Language Model Service uses a .env file for sensitive information. Ensure you have created these files with the necessary information before starting the services.
 
-### `npm run build`
+3. Deployment Sequence:
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+   3.1. Chat Service
+        The Chat Service should be started first as it sets up shared resources like MySQL, Redis, and Kafka.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+        3.1.1. Navigate to the Chat Service directory:
+               cd /path/to/chat-service
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+        3.1.2. Start the service:
+               docker-compose up -d
 
-### `npm run eject`
+        3.1.3. This will create containers for:
+               - MySQL (port 3306)
+               - Redis (port 6379)
+               - Kafka (port 9092)
+               - Zookeeper (port 2181)
+               - Chat Service (port 8080)
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+   3.2. History Service
+        The History Service should be started after the Chat Service is up and running.
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+        3.2.1. Navigate to the History Service directory:
+               cd /path/to/history-service
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+        3.2.2. Start the service:
+               docker-compose up -d
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+        3.2.3. This will create containers for:
+               - MongoDB (port 27017)
+               - History Service (port 8081)
 
-## Learn More
+   3.3. Language Model Service
+        The Language Model Service should be started last.
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+        3.3.1. Navigate to the Language Model Service directory:
+               cd /path/to/language-model-service
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+        3.3.2. Create a .env file with the following content:
+               OPENAI_API_KEY=your_openai_api_key_here
+               Replace your_openai_api_key_here with your actual OpenAI API key.
+
+        3.3.3. Start the service:
+               docker-compose up -d
+
+        3.3.4. This will create a container for:
+               - Language Model Service (port 8082)
+
+3.4. UI Service
+        The UI Service should be started after all the backend services are up and running.
+
+        3.2.1. Navigate to the History Service directory:
+               cd /path/to/ui-service
+
+        3.2.2. Start the service:
+               docker-compose up -d
+
+        3.2.3. This will create containers for:
+               - UI (port 3000)
+
+4. Verification:
+   4.1. To verify that all services are running:
+        docker ps
+   4.2. You should see containers for all services and their dependencies.
+
+5. Stopping the Services:
+   5.1. To stop all services, run the following commands in each service directory:
+        docker-compose down
+   5.2. To stop all services and remove all data (including database data), use:
+        docker-compose down -v
+
+6. Troubleshooting:
+   6.1. If services fail to start, check the logs using docker-compose logs [service_name].
+   6.2. Ensure all required ports are available on your host machine.
+   6.3. Verify that the .env files contain the correct information for Language Model service.

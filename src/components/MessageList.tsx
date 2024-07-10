@@ -1,4 +1,3 @@
-// src/components/MessageList.tsx
 import React, { useEffect, useRef } from 'react';
 import { MessageDTO } from '../types';
 
