@@ -4,7 +4,7 @@ services:
   react-app:
     build: .
     ports:
-      - "3001:3000"
+      - "3000:3000"
     environment:
       - REACT_APP_CHAT_SERVICE_URL=http://host.docker.internal:8080
       - REACT_APP_HISTORY_SERVICE_URL=http://host.docker.internal:8081
