@@ -21,7 +21,7 @@ Before running the UI Service, ensure the following repositories are cloned and 
 1. Navigate to the UI Service directory:
        cd /path/to/genie-ui-service
 2. Start the service:
-       docker-compose up -d
+       docker-compose up
 3. Verify that the service is running:
        docker ps
 4. Access the UI in your web browser at `http://localhost:3000`
